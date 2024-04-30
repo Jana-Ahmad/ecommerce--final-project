@@ -6,12 +6,16 @@ import ProtectedRoutes from "../../components/ProtectedRoutes/ProtectedRoutes";
 import { UserContext } from "../../context/User";
 import Rating from "../Rating/Rating";
 import { ProductsContext } from "../../context/AllProducts";
+import { toast } from "react-toastify";
 
+// /product/:id
 function ProductDisplay({ item }) {
-  const products=useContext(ProductsContext);
+  // const {id} = useParams()
+
+  const products = useContext(ProductsContext);
   const {
     avgRating,
-    id,
+    _id: productId,
     price,
     name,
     sizes,
@@ -27,8 +31,7 @@ function ProductDisplay({ item }) {
   const [preQuantity, setQuantity] = useState(number_sellers);
   const [cart, setCart] = useState([]);
   const [accessToken, setAccessToken] = useState("");
-  const Token = useContext(UserContext);
-const productId= id;
+  const {userToken} = useContext(UserContext);
   const [message, setMessage] = useState("");
 
   const handleSizeChange = (e) => {
@@ -46,35 +49,26 @@ const productId= id;
     setQuantity(preQuantity + 1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-   
-      const cart = await axios.post(
+  const addToCart = async () => {
+    try {
+      const { data } = await axios.post(
         `${import.meta.env.VITE_API}/cart`,
         {
-         productId,
+          productId,
         },
-
         {
           headers: {
-            Authorization: `Tariq__${Token}`,
+            Authorization: `Tariq__${userToken}`,
           },
         }
       );
-      
-      const existingCart = localStorage.getItem("cart") || [];
-      const existingProductIndex = existingCart.findIndex(
-        (item) => item.id === id
-      );
-      if (existingProductIndex !== -1) {
-        existingCart[existingProductIndex].quantity += preQuantity;
-      } else {
-        existingCart.push(productId);
+      if (data.message == 'success') {
+        toast.success("Product Added Successfully!")
+        // TODO: Refresh Cart
       }
-      localStorage.setItem("cart");
-
-   
-    
+    } catch (error) {
+      toast.error(error.response.data.message || "Something went wrong!")
+    }
   };
 
   return (
@@ -83,14 +77,14 @@ const productId= id;
         <h4>{name}</h4>
         <p className="rating">
           <Rating rating={avgRating} />
-          <span>{reviews.length} review</span>
+          <span>{reviews?.length || 0} review</span>
         </p>
         <h4>${price}</h4>
         <span>{description}</span>
       </div>
 
       <div>
-        <form>
+        <div>
           <div className="select-product size">
             <select value={size} onChange={handleSizeChange}>
               <option>Select Size</option>
@@ -138,14 +132,14 @@ const productId= id;
             />
           </div>
 
-          <button type="submit" className="lab-btn" onClick={handleSubmit}>
+          <button type="button" className="lab-btn" onClick={addToCart}>
             <span>Add to Cart</span>
           </button>
 
           <Link to="/Cart" className="lab-btn bg-primary">
             <span>Check Out</span>
           </Link>
-        </form>
+        </div>
       </div>
     </div>
   );

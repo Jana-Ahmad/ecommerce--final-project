@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-no-undef */
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ToastContainer} from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Home from "./pages/Home/Home";
 import Root from "./Routes/Root";
@@ -27,35 +27,89 @@ import ProductDisplay from "./pages/Shop/ProductDisplay";
 import Review from "./pages/Shop/Review";
 import SendCode from "./pages/Forgot password/SendCode";
 
-
-
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
     children: [
-      { path: "/", element:<ProductsContextProvider> <Home /> </ProductsContextProvider> },
+      {
+        path: "/",
+        element: (
+          <ProductsContextProvider>
+            <Home />
+          </ProductsContextProvider>
+        ),
+      },
       { path: "/about", element: <About /> },
-     {path: "/contact", element: <Contact/>},
-      {path: "/shop", element: <ProtectedRoutes><ProductsContextProvider><Shop/></ProductsContextProvider> </ProtectedRoutes>},
-      {path:"/shop/:id",element:<ProtectedRoutes><ProductsContextProvider><SingleProduct></SingleProduct></ProductsContextProvider></ProtectedRoutes>},
-      { path: "/cart", element: <ProtectedRoutes><ProductsContextProvider><Cart /> </ProductsContextProvider></ProtectedRoutes>},
+      { path: "/contact", element: <Contact /> },
+      {
+        path: "/shop",
+        element: (
+          <ProtectedRoutes>
+            <ProductsContextProvider>
+              <Shop />
+            </ProductsContextProvider>{" "}
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: "/shop/:id",
+        element: (
+          <ProtectedRoutes>
+            <ProductsContextProvider>
+              <SingleProduct />
+            </ProductsContextProvider>
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <ProtectedRoutes>
+            <ProductsContextProvider>
+              <Cart />{" "}
+            </ProductsContextProvider>
+          </ProtectedRoutes>
+        ),
+      },
       { path: "/categories", element: <Categories /> },
       { path: "/forgotpassword", element: <ForgotPassword /> },
       { path: "/order", element: <Order /> },
       { path: "/product/:id", element: <Product /> },
-      { path: "/product", element: <ProtectedRoutes><Product /> </ProtectedRoutes> },
-      {path:"/categories/:id",element: <CategoryProducts/>},
+      {
+        path: "/product",
+        element: (
+          <ProtectedRoutes>
+            <Product />{" "}
+          </ProtectedRoutes>
+        ),
+      },
+      { path: "/categories/:id", element: <CategoryProducts /> },
       { path: "/profile", element: <Profile /> },
       { path: "/signin", element: <Signin /> },
-      { path: "/signup", element:  <Signup /> },
-      {path: "productdisplay",element:<ProductsContextProvider> <ProductDisplay/></ProductsContextProvider>},
-      {path:"/singleproduct",element: <SingleProduct/>},
-      {path:"/review",element:<ProductsContextProvider><Review/></ProductsContextProvider>},
-      {path:"/sendcode",element: <SendCode/>},
+      { path: "/signup", element: <Signup /> },
+      {
+        path: "productdisplay",
+        element: (
+          <ProductsContextProvider>
+            {" "}
+            <ProductDisplay />
+          </ProductsContextProvider>
+        ),
+      },
+      { path: "/singleproduct", element: <SingleProduct /> },
+      {
+        path: "/review",
+        element: (
+          <ProductsContextProvider>
+            <Review />
+          </ProductsContextProvider>
+        ),
+      },
+      { path: "/sendcode", element: <SendCode /> },
       {
         path: "*",
-        element: <Notfound />
+        element: <Notfound />,
       },
     ],
   },
@@ -64,14 +118,12 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
-    <UserContextProvider>
-  <RouterProvider router={router} />;
- </UserContextProvider>
-  <ToastContainer position="top-center" richColors />
-  </>
-  )
+      <UserContextProvider>
+        <RouterProvider router={router} />;
+      </UserContextProvider>
+      <ToastContainer position="top-center" richColors />
+    </>
+  );
 }
 
 export default App;
-
-
