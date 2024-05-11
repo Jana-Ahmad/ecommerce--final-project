@@ -8,7 +8,7 @@ export const ProductsContext= createContext();
     const getAllProducts = async () => {
 
         const { data } = await axios.get(
-        `https://ecommerce-node4-five.vercel.app/products?&limit=10`,
+        `${import.meta.env.VITE_API}/products?&limit=10`,
      
        );
        setAllProducts(data.products);

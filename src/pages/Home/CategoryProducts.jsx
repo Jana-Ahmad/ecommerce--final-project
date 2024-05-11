@@ -11,7 +11,7 @@ function CategoryProducts() {
   const {loading , withLoading}= useContext(LoadingContext)
   const getProducts = asyncHandler(async()=>{
     const { data } = await axios.get(
-      `https://ecommerce-node4-five.vercel.app/products/category/${id}`
+      `${import.meta.env.VITE_API}/products/category/${id}`
     );
     setProducts(data.products);
   });
@@ -39,7 +39,7 @@ function CategoryProducts() {
                 <div className="product-title ">
                   <h6>{product.name}</h6> 
         
-                  <button className="btn btn-dark" onClick={() => addToCart(product._id)}>
+                  <button className="btn btn-dark" onClick={() => getProducts(product._id)}>
               {" "}
               Add to Cart{" "}
             </button> 

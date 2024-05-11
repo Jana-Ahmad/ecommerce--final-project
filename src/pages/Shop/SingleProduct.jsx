@@ -14,11 +14,10 @@ import ProductDisplay from "./ProductDisplay";
 import Review from "./Review";
 import axios from "axios";
 import { LoadingContext } from "../../context/LoadingContextProvider";
+import Loader from "../../components/Loader/Loader";
 
 function SingleProduct() {
-  const allProducts = useContext(ProductsContext);
-  const products = allProducts.allProducts;
-  const [product, setProduct] = useState([]);
+ 
   const { id } = useParams();
 
   const [singleProduct, setSingleProduct] = useState({});
@@ -41,10 +40,6 @@ function SingleProduct() {
     withLoading(getSingleProduct, "getSingleProduct");
   }, [id]);
 
-  useEffect(() => {
-    fetch("products").then((allProducts) => setProduct(allProducts));
-  }, []);
-  const result = products.filter((product) => product.id === id);
 
   const images =
     Object.keys(singleProduct).length > 0
@@ -53,7 +48,7 @@ function SingleProduct() {
 
   if (loading.getSingleProduct) {
     return (
-      <h1 style={{ martingTop: "100px", background: "red" }}>Loading....</h1>
+      <h1 style={{textAlign:"center"}}><Loader/></h1>
     );
   }
 

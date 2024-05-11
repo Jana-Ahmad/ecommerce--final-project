@@ -21,7 +21,7 @@ import UserContextProvider from "./context/User";
 import CategoryProducts from "./pages/Home/CategoryProducts";
 import ProductsContextProvider from "./context/AllProducts";
 import Shop from "./pages/Shop/Shop";
-import Contact from "./pages/Contact/components/Contact";
+import CheckoutPage from "./pages/Shop/CheckoutPage";
 import SingleProduct from "./pages/Shop/SingleProduct";
 import ProductDisplay from "./pages/Shop/ProductDisplay";
 import Review from "./pages/Shop/Review";
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
         ),
       },
       { path: "/about", element: <About /> },
-      { path: "/contact", element: <Contact /> },
+     
       {
         path: "/shop",
         element: (
@@ -73,6 +73,8 @@ const router = createBrowserRouter([
         ),
       },
       { path: "/categories", element: <Categories /> },
+      { path: "/profile", element: <Profile /> },
+      { path: "/checkoutpage", element: <CheckoutPage /> },
       { path: "/forgotpassword", element: <ForgotPassword /> },
       { path: "/order", element: <Order /> },
       { path: "/product/:id", element: <Product /> },

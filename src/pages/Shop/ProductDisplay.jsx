@@ -2,17 +2,17 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Await, Link } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
-import ProtectedRoutes from "../../components/ProtectedRoutes/ProtectedRoutes";
+
 import { UserContext } from "../../context/User";
 import Rating from "../Rating/Rating";
-import { ProductsContext } from "../../context/AllProducts";
+
 import { toast } from "react-toastify";
 
-// /product/:id
-function ProductDisplay({ item }) {
-  // const {id} = useParams()
 
-  const products = useContext(ProductsContext);
+function ProductDisplay({ item }) {
+
+console.log(item)
+
   const {
     avgRating,
     _id: productId,
@@ -25,14 +25,14 @@ function ProductDisplay({ item }) {
     mainImage,
   } = item;
 
-  const [coupon, setCoupon] = useState("");
+ 
   const [size, setSize] = useState("Select Size");
   const [color, setColor] = useState("Select Color");
-  const [preQuantity, setQuantity] = useState(number_sellers);
-  const [cart, setCart] = useState([]);
+  
+
   const [accessToken, setAccessToken] = useState("");
   const {userToken} = useContext(UserContext);
-  const [message, setMessage] = useState("");
+
 
   const handleSizeChange = (e) => {
     setSize(e.target.value);
@@ -40,14 +40,7 @@ function ProductDisplay({ item }) {
   const handleColorChange = (e) => {
     setColor(e.target.value);
   };
-  const handleDecrease = () => {
-    if (preQuantity > 1) {
-      setQuantity(preQuantity - 1);
-    }
-  };
-  const handleIncrease = () => {
-    setQuantity(preQuantity + 1);
-  };
+  
 
   const addToCart = async () => {
     try {
@@ -62,6 +55,7 @@ function ProductDisplay({ item }) {
           },
         }
       );
+    
       if (data.message == 'success') {
         toast.success("Product Added Successfully!")
         // TODO: Refresh Cart
@@ -94,8 +88,8 @@ function ProductDisplay({ item }) {
               <option>XL</option>
               <option>XXL</option>
             </select>
-            <i className="icofont-rounded-down"></i>
-          </div>
+            </div>
+            
 
           <div className="select-product color">
             <select value={color} onChange={handleColorChange}>
@@ -104,34 +98,10 @@ function ProductDisplay({ item }) {
               <option>Black</option>
               <option>Gray</option>
             </select>
-            <i className="icofont-rounded-down"></i>
-          </div>
-
-          <div className="cart-plus-minus">
-            <div className="dec qtybutton" onClick={handleDecrease}>
-              -
             </div>
-            <input
-              type="text"
-              name="qtybutton"
-              id="qtybutton"
-              value={preQuantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-              className="cart-plus-minus-box"
-            />
-            <div className="inc qtybutton" onClick={handleIncrease}>
-              +
-            </div>
-          </div>
+          
 
-          <div className="discount-code mb-2">
-            <input
-              type="text"
-              placeholder="Enter Discount Code"
-              onChange={(e) => setCoupon(e.target.value)}
-            />
-          </div>
-
+        
           <button type="button" className="lab-btn" onClick={addToCart}>
             <span>Add to Cart</span>
           </button>
@@ -142,7 +112,7 @@ function ProductDisplay({ item }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default ProductDisplay;

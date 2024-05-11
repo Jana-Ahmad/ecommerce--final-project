@@ -19,7 +19,6 @@ function SendCode() {
       setLoading(true);
   
       try {
-        // Send a request to the backend to send a verification code to the user's email
         const response = await axios.patch(
           `${import.meta.env.VITE_API}/auth/sendcode`,
           { email }

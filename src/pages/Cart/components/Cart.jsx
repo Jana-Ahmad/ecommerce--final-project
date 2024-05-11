@@ -1,104 +1,203 @@
-
-  
-import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
-import { json } from 'react-router-dom';
-import { UserContext } from '../../../context/User';
-import { ProductsContext } from '../../../context/AllProducts';
-
-
+import React, { useContext, useEffect, useState } from "react";
+import PageHeader from "../../../components/PageHeader/PageHeader";
+import { UserContext } from "../../../context/User";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Link, useParams } from "react-router-dom";
+import { LoadingContext } from "../../../context/LoadingContextProvider";
+import CheckoutPage from "../../Shop/CheckoutPage";
 
 function Cart() {
-  const [accessToken, setAccessToken] = useState("");
-  const products=useContext(ProductsContext);
-  const Token = useContext(UserContext);
-const [cartItems,setCartItems]=useState([]);
-
-useEffect( ()=>{
- const storedCartItems = localStorage.getItem("cart") || [];
- setCartItems(storedCartItems)
-
-},[])
  
-const calculateTotalPrice =(item) => {
-  return item.price * item.quantity;
+  const [accessToken, setAccessToken] = useState("");
+  const { userToken } = useContext(UserContext);
+  const [cartItem, setCartItem] = useState([]);
+  const { withLoading, loading } = useContext(LoadingContext);
 
-}
- const handleIncrese= async(item) => {
-  const data =  await axios.patch(
-    `{${import.meta.env.VITE_API}cart/incraseQuantity}`,
-    {
-      productId: products.id,
-     },
 
-     {
-       headers: {
-         Authorization: `Tariq__${Token}`,
-       },
-     }
-   );
-  
-  item.quantity +=1;
-  setCartItems([...cartItems,data]);
+  async function getCart() {
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_API}/cart`,
 
-  localStorage.setItem("cart",JSON.stringify(cartItems));
- }
- const handleDecrese= async(item) => {
-  const data =  await axios.patch(
-    `{${import.meta.env.VITE_API}cart/decraseQuantity}`,
-    {
-      pproductId: products.id,
-     },
-
-     {
-       headers: {
-         Authorization: `Tariq__${Token}`,
-       },
-     }
-   );
-  {
-  if(item.quantity> 1){
-    item.quantity -= 1;
-    setCartItems([...cartItems,data]);
-    localStorage.setItem("cart",JSON.stringify(cartItems));
+      {
+        headers: {
+          Authorization: `Tariq__${userToken}`,
+        },
+      }
+    );
+    setCartItem(data.products);
   }
- }
-}
+  useEffect(() => {
+    withLoading(cartItem, "getCartItem");
+    getCart();
+  }, []);
 
- const handleRemoveItem= async(item) => {
-  const data =  await axios.patch(
-    `{${import.meta.env.VITE_API}cart/removeItem}`,
-    {
-      productId: products.id,
-     },
 
-     {
-       headers: {
-         Authorization: `Tariq__${Token}`,
-       },
-     }
-   );
-   const updatedCart = cartItems.filter((cartItem)=>cartItem.id !== item.id);
-   setCartItems(updatedCart);
-updateLocalStorage(updatedCart)
+
+  const handleIncreaseQuantity = async (id) => {
+    try {
+      const { data } = await axios.patch(
+        `${import.meta.env.VITE_API}/cart/incraseQuantity`,
+        {
+          productId: id,
+        },
+        {
+          headers: {
+            Authorization: `Tariq__${userToken}`,
+          },
+        }
+      );
+
+      if (data.message == 'success') {
+        getCart()
+      }
+
+      
+    } catch (error) {
+      console.error("Error occurred:", error);
     }
-const updateLocalStorage=(cart)=>{
-localStorage.setItem("cart",JSON.stringify(cart));
-}
-const cartSubTotal = cartItems.reduce((total,item)=>{
-  return total + calculateTotalPrice(item);
-},0
-)
+  };
 
 
 
+  const handleDecreaseQuantity = async (productId) => {
+    try {
+      const { data } = await axios.patch(
+        `${import.meta.env.VITE_API}/cart/decraseQuantity`,
+        {
+          productId,
+        },
+        {
+          headers: {
+            Authorization: `Tariq__${userToken}`,
+          },
+        }
+      );
+      if (data.message == 'success') {
+      
+        getCart()
+      }
 
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
+  };
+
+
+  const removeItem = async (id) => {
+    try {
+      const { data } = await axios.patch(
+        `${import.meta.env.VITE_API}/cart/removeItem`,
+        {
+          productId: id,
+        },
+        {
+          headers: {
+            Authorization: `Tariq__${userToken}`,
+          },
+        }
+      );
+
+      if (data.message == 'success') {
+        getCart()
+      }
+     
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
+  };
 
 
   return (
     <div>
-      <h1>Add to Cart</h1>
-     </div>
-      )
+      <PageHeader title={"Shop Cart"} currentPage={"Cart Page"} />
+      <div className="shop-cart padding-tb">
+        <div className="container">
+          <div className="section-wrapper">
+            <div className="cart-top">
+              <table>
+                <thead>
+                  <tr>
+                    <th className="cat-product">Product</th>
+                    <th className="cat-price">Price</th>
+                    <th className="cat-quantity">Quantity</th>
+                    <th className="cat-toprice">Total</th>
+                    <th className="cat-edit">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItem.map((item,id) => (
+                    <tr key={id}>
+                      <td className="product-item cat-product">
+                        <div className="p-thumb ">
+                          <img
+                            src={item.details.mainImage.secure_url}
+                            alt="Product's Image"
+                          />
+                        </div>
+                        <div className="p-content">
+                          <span>{item.details.name}</span>
+                        </div>
+                      </td>
+                      <td className="cat-price">${item.details.price}</td>
+                      <td className="cat-quantity">
+                        <div className="cart-plus-minus">
+                          <button
+                            className="dec qtybutton"
+                            onClick={() => {
+                              handleDecreaseQuantity(item.details._id)
+                            }}
+                            disabled={item.quantity == 1}
+                          >
+                            -
+                          </button>
+                          <input
+                            type="text"
+                            className="cart-plus-minus-box"
+                            name="qtybutton"
+                            value={item.quantity}
+                          />
+                          <button
+                            className="inc qtybutton"
+                            onClick={() => handleIncreaseQuantity(item.details._id)}
+                            disabled={item.quantity == item.details.stock}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </td>
+                      <td className="cat-toprice">
+                        ${item.details.price * item.quantity}
+                      </td>
+                      <td className="
+                      ">
+                        <a href="#" onClick={() => removeItem(item.details._id)}>
+                          X
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="cart-bottom">
+           
+                <form className="cart-checkout ">
+                  
+                <div>
+                  <CheckoutPage/>
+                  </div>
+                
+                </form>
+           
+            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
+
 export default Cart;

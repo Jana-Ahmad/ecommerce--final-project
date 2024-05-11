@@ -76,7 +76,10 @@ function Navbar() {
                   </li>
                   
                   <li>
-                    <NavLink to="/contact">Contact</NavLink>
+                    <NavLink to="/cart">Cart</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/profile">Orders</NavLink>
                   </li>
                 </ul>
               </div>

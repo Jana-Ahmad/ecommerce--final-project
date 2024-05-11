@@ -19,10 +19,10 @@ import '././assets/css/style.min.css';
 import LoadingContextProvider from './context/LoadingContextProvider.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+ 
    <LoadingContextProvider>
    <App />
    </LoadingContextProvider>
     
-  </React.StrictMode>,
+ 
 )
