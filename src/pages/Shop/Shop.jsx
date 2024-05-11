@@ -4,12 +4,16 @@ import { ProductsContext } from "../../context/AllProducts";
 import ProductCards from "./ProductCards";
 
 import Search from "./Search";
+import { UserContext } from "../../context/User";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function Shop() {
   const showResults = "Showing 01-08 of all Results";
   const [GridList, setGridList] = useState(true);
   const allProducts = useContext(ProductsContext);
 
+  
   return (
     <div>
       <PageHeader title="Our Shop Page" currentPage="Shop" />

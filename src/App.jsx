@@ -73,11 +73,11 @@ const router = createBrowserRouter([
         ),
       },
       { path: "/categories", element: <Categories /> },
-      { path: "/profile", element: <Profile /> },
-      { path: "/checkoutpage", element: <CheckoutPage /> },
+      { path: "/profile", element:   <ProtectedRoutes><Profile /></ProtectedRoutes>  },
+      { path: "/checkoutpage", element: <ProtectedRoutes><CheckoutPage /> </ProtectedRoutes>},
       { path: "/forgotpassword", element: <ForgotPassword /> },
-      { path: "/order", element: <Order /> },
-      { path: "/product/:id", element: <Product /> },
+      { path: "/order", element: <ProtectedRoutes><Order /></ProtectedRoutes> },
+      { path: "/product/:id", element: <ProtectedRoutes><Product /> </ProtectedRoutes>},
       {
         path: "/product",
         element: (
@@ -87,7 +87,7 @@ const router = createBrowserRouter([
         ),
       },
       { path: "/categories/:id", element: <CategoryProducts /> },
-      { path: "/profile", element: <Profile /> },
+     
       { path: "/signin", element: <Signin /> },
       { path: "/signup", element: <Signup /> },
       {

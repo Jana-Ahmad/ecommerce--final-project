@@ -1,36 +1,86 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { LoadingContext } from '../../context/LoadingContextProvider';
+import { UserContext } from '../../context/User';
+import { Bounce, Slide, toast } from 'react-toastify';
 
 
 
 function SendCode() {
   const title="Reset Your Account";
+  const navigate = useNavigate();
   const btnText="Reset Now!"
+  const[loader,setLoader]=useState(false);
+  
+
  
 
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [code, setCode] = useState({
+      email: "",
+    });
+    
+
   
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setCode({
+        [name]:value
+      });
+    };
     const handleSubmit = async (e) => {
       e.preventDefault();
-      setLoading(true);
-  
+      setLoader(true)
+
       try {
-        const response = await axios.patch(
+        const {data} = await axios.patch(
           `${import.meta.env.VITE_API}/auth/sendcode`,
-          { email }
+          { 
+            email:code.email,
+           }
         );
-        setMessage(response.data.message);
-      } catch (error) {
-        console.error('Error sending verification code:', error);
-        setMessage('An error occurred while sending the verification code. Please try again.');
+       
+     
+      if(data.message == "success") {
+        toast.success(" Code Sended successfully!", {
+          position: "top-center",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Slide,
+        });
+        
+        navigate ("/forgotPassword");
+      }
+      
+    }catch(error){
+     if(error .response.status===400){
+        toast.error(error.response.data.message, {
+          position: "bottom-center",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+          });
+      }
+      console.log(error)
+    }
+    finally{
+      setLoader(false);
       }
   
-      setLoading(false);
-    };
+  }
+    
+  
   
   return (
 
@@ -42,28 +92,27 @@ function SendCode() {
         <form className="account-form" onSubmit={handleSubmit}>
           <div className="form-group">
           <input 
-            type="email"
-            placeholder="Enter you email Address *"
-            required
-            value={email}
-            name="email"
-            id="email"
-            required
-            onChange={(e) => setEmail(e.target.value)}
+           type="email"
+           placeholder="Email Address *"
+           required
+           value={code.email}
+           name="email"
+           id="email"
+           onChange={handleChange}
           />
  </div>
  <div className="form-group">
-  <Link to="/forgotpassword"><button type="submit" disabled={loading}>{loading ? 'Sending...' : 'Send Verification Code'}</button></Link>
+  <Link to="/forgotpassword"><button type="submit" disabled={loader? 'disabled' : null}>{!loader?'Send Code': "wait..."}</button></Link>
   </div>
      
       </form>
-      {message && <p>{message}</p>}
+  
       </div>
       </div>
       </div>
       </div>
   )
    
-};
+}
 
 export default SendCode

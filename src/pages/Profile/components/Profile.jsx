@@ -51,6 +51,11 @@ function Profile() {
   console.error("Error occurred:", error);
 }
   }
+  useEffect(() => {
+    withLoading(cancelOrder, "getOrder");
+    getOrder();
+  }, []);
+
   return (
     <div>
       <PageHeader title={"Your Orders"} currentPage={"Orders Page"} />
